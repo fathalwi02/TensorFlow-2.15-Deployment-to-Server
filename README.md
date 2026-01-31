@@ -3,8 +3,8 @@
 
 > [!IMPORTANT]
 > **Environment Status:**
-> - **System Python:** 3.8 (Incompatible with TF 2.15)
-> - **CUDA Driver:** 12.2 (Compatible)
+> - **System Python:** If 3.8 (Incompatible with TF 2.15)
+> - **CUDA Driver:** Ensure version is ≥ 12.0 (Compatible)
 > - **Goal:** Deploy TensorFlow 2.15 (Requires Python 3.9-3.11)
 
 ---
@@ -41,8 +41,8 @@ $HOME/miniconda3/bin/conda init bash
 source ~/.bashrc
 
 # 4. Create Python 3.11 environment
-conda create -n ml-vision python=3.11 -y
-conda activate ml-visionY"  # Replace with your Personal Access
+conda create -n <your_env_name> python=3.11 -y
+conda activate <your_env_name>
 python --version  # Confirms Python 3.11.x
 ```
 
@@ -57,16 +57,16 @@ If the server has no internet access, prepare files on a connected machine first
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
 # 2. Download Wheels
-mkdir tf_offline && cd tf_offline
+mkdir <offline_folder_name> && cd <offline_folder_name>
 pip download tensorflow[and-cuda]==2.15.0 --dest .
 
 # 3. Option: Pre-pack full environment (requires conda-pack)
 # conda install -c conda-forge conda-pack
-# conda-pack -n ml-vision -o ml-vision-portable.tar.gz 
+# conda-pack -n <your_env_name> -o <env_name_portable>.tar.gz 
 ```
 
 #### B. Transfer
-Transfer `Miniconda3-latest-Linux-x86_64.sh` and the `tf_offline/` folder (or `.tar.gz` archive) to the server via **FileZilla (SFTP)**
+Transfer `Miniconda3-latest-Linux-x86_64.sh` and the `<offline_folder_name>/` folder (or `.tar.gz` archive) to the server via **FileZilla (SFTP)**
 
 #### C. Installation (On Server)
 
@@ -76,11 +76,11 @@ bash ~/Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda3
 source ~/.bashrc
 
 # Create Environment
-conda create -n ml-vision python=3.11 -y
-conda activate ml-vision
+conda create -n <your_env_name> python=3.11 -y
+conda activate <your_env_name>
 
 # Install Packages
-pip install --no-index --find-links=~/tf_offline/ tensorflow
+pip install --no-index --find-links=~/<offline_folder_name>/ tensorflow
 ```
 
 ---
@@ -88,7 +88,7 @@ pip install --no-index --find-links=~/tf_offline/ tensorflow
 ## 3. GPU Configuration
 
 **Verification:**
-Run `nvidia-smi` to confirm the driver version is **≥ 525.60.13** (required for CUDA 12). Your system shows **12.2**, which is compatible.
+Run `nvidia-smi` to confirm the driver version is **≥ 525.60.13** (required for CUDA 12). Ensure your system shows a compatible version.
 
 ### Installation Check
 TensorFlow 2.15 will automatically use the bundled CUDA libraries if installed via `pip install tensorflow[and-cuda]`.
@@ -125,13 +125,11 @@ apptainer exec --nv tf215.sif python <YOUR_SCRIPT.py>
 
 ---
 
----
-
 ## Quick Reference
 
 | Action | Command |
 |--------|---------|
-| New Env | `conda create -n ml-vision python=3.11` |
-| Activate | `conda activate ml-vision` |
+| New Env | `conda create -n <your_env_name> python=3.11` |
+| Activate | `conda activate <your_env_name>` |
 | GPU Check | `nvidia-smi` |
 | TF Install | `pip install tensorflow[and-cuda]==2.15.0` |
