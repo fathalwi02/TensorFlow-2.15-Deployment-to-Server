@@ -48,39 +48,34 @@ python --version  # Confirms Python 3.11.x
 
 ### Offline / Air-Gapped Installation
 
-If the server has no internet access, prepare files on a connected machine first.
+If the server has no internet access, download the pre-packaged offline kit from this repository's **[Releases](https://github.com/fathalwi02/TensorFlow-2.15-Deployment-to-Server/releases)** page.
 
-#### A. Preparation (On Internet-Connected Machine)
+#### A. Download Artifacts (On Internet-Connected Machine)
 
-```bash
-# 1. Download Installer
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-
-# 2. Download Wheels
-mkdir <offline_folder_name> && cd <offline_folder_name>
-pip download tensorflow[and-cuda]==2.15.0 --dest .
-
-# 3. Option: Pre-pack full environment (requires conda-pack)
-# conda install -c conda-forge conda-pack
-# conda-pack -n <your_env_name> -o <env_name_portable>.tar.gz 
-```
+1.  Go to the **Releases** tab.
+2.  Download the following core files:
+    *   `Miniconda3-latest-Linux-x86_64.sh` (Installer)
+    *   `tf_offline.tar.gz` (TensorFlow 2.15 Wheels + Dependencies)
 
 #### B. Transfer
-Transfer `Miniconda3-latest-Linux-x86_64.sh` and the `<offline_folder_name>/` folder (or `.tar.gz` archive) to the server via **FileZilla (SFTP)**
+Transfer `Miniconda3-latest-Linux-x86_64.sh` and `tf_offline.tar.gz` to the server via **FileZilla (SFTP)** or USB drive.
 
 #### C. Installation (On Server)
 
 ```bash
-# Install Miniconda
+# 1. Install Miniconda
 bash ~/Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda3
 source ~/.bashrc
 
-# Create Environment
+# 2. Unpack Wheels
+tar -xzf tf_offline.tar.gz
+
+# 3. Create Environment & Install
 conda create -n <your_env_name> python=3.11 -y
 conda activate <your_env_name>
 
-# Install Packages
-pip install --no-index --find-links=~/<offline_folder_name>/ tensorflow
+# 4. Install Packages from Local Directory
+pip install --no-index --find-links=tf_offline/ tensorflow
 ```
 
 ---
