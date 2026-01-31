@@ -42,7 +42,7 @@ source ~/.bashrc
 
 # 4. Create Python 3.11 environment
 conda create -n ml-vision python=3.11 -y
-conda activate ml-vision
+conda activate ml-visionY"  # Replace with your Personal Access
 python --version  # Confirms Python 3.11.x
 ```
 
@@ -122,40 +122,6 @@ Common in research environments without root Docker access.
 apptainer build tf215.sif docker://tensorflow/tensorflow:2.15.0-gpu
 apptainer exec --nv tf215.sif python <YOUR_SCRIPT.py>
 ```
-
----
-
-## 5. Escalation: Technical Request Specifications
-
-If user-space solutions are blocked, providing these exact technical details to IT will speed up the process.
-
-**Objective:** Install Python 3.11 alongside system Python 3.8 (Non-destructive "Altinstall").
-
-**Technical Requirements:**
-
-*   **Target Version:** Python 3.11.x
-*   **Installation Path:** `/usr/local/bin/python3.11` (or `/opt/python3.11`)
-*   **Method:** Source compilation with `make altinstall` to prevent overwriting `/usr/bin/python3`.
-
-**Safe Installation Command Sequence for IT:**
-
-```bash
-# 1. Download & Extract
-wget https://www.python.org/ftp/python/3.11.7/Python-3.11.7.tgz
-tar xzf Python-3.11.7.tgz && cd Python-3.11.7
-
-# 2. Configure (Enable optimizations for ML performance)
-./configure --enable-optimizations --prefix=/usr/local
-
-# 3. Build & Alt-Install
-make -j$(nproc)
-sudo make altinstall  # CRITICAL: Use 'altinstall', not 'install'
-```
-
-**Why this is safe:**
-1.  **No Symlink Changes:** Does NOT touch the `python3` command or system links.
-2.  **Isolated Binary:** Only accessible via explicit `python3.11` command.
-3.  **No Yum/Apt Conflicts:** Completely independent of the system package manager.
 
 ---
 
